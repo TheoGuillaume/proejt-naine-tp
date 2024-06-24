@@ -1,0 +1,120 @@
+@{
+    ViewData["Title"] = "Page d'accueil";
+}
+
+<div class="container">
+    <div class="text-center">
+        <h5>Recherche sur vos décomptes des heures supplémentaires imposables et non imposables par mois</h5>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <form id="searchForm">
+                <div class="form-group">
+                    <label for="annee">Année</label>
+                    <input type="text" class="form-control" id="annee" name="annee" required>
+                </div>
+                <div class="form-group">
+                    <label for="mois">Mois</label>
+                    <select class="form-control" id="mois" name="mois" required>
+                        <!-- Options seront ajoutées par AJAX -->
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+            </form>
+            <br>
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th scope="col">Variable</th>
+                        <th scope="col">Heure</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsTableBody">
+                    <tr>
+                        <td>HSNI 130 % </td>
+                        <td id="HSNI130">0</td>
+                    </tr>
+                    <tr>
+                        <td>HSNI 150 % </td>
+                        <td id="HSNI150">0</td>
+                    </tr>
+                    <tr>
+                        <td>HSI 130 % </td>
+                        <td id="HSI130">0</td>
+                    </tr>
+                    <tr>
+                        <td>HSI 150 % </td>
+                        <td id="HSI150">0</td>
+                    </tr>
+                    <tr>
+                        <td>HN 30 % </td>
+                        <td id="HN30">0</td>
+                    </tr>
+                    <tr>
+                        <td>Hdim 40 % </td>
+                        <td id="Hdim40">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-2"></div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Chargement initial des mois via AJAX
+        $.ajax({
+            url: '/api/Employees/getMois',
+            type: 'GET',
+            success: function (data) {
+                var moisSelect = $('#mois');
+                moisSelect.empty();
+                data.forEach(function (mois) {
+                    moisSelect.append('<option value="' + mois.mois + '">' + mois.mois + '</option>');
+                });
+            },
+            error: function (error) {
+                console.error('Erreur:', error);
+            }
+        });
+
+        // Soumission du formulaire de recherche
+        $('#searchForm').submit(function (event) {
+            event.preventDefault();
+            var formData = {
+                annee: $('#annee').val() ? $('#annee').val() : '2024',
+                mois: $('#mois').val()
+            };
+
+            $.ajax({
+                url: '/api/Employees/recherche',
+                type: 'GET',
+                data: formData,
+                success: function (data) {
+                    if (data.length == 0) {
+                        $('#HSNI130').text(0);
+                        $('#HSNI150').text(0);
+                        $('#HSI130').text(0);
+                        $('#HSI150').text(0);
+                        $('#HN30').text(0);
+                        $('#Hdim40').text(0);
+                    } else {
+                        $('#HSNI130').text(data[0].hsnI130);
+                        $('#HSNI150').text(data[0].hsnI150);
+                        $('#HSI130').text(data[0].hsI130);
+                        $('#HSI150').text(data[0].hsI150);
+                        $('#HN30').text(data[0].hN30);
+                        $('#Hdim40').text(data[0].hdim40);
+                    }
+                },
+                error: function (error) {
+                    console.error('Erreur:', error);
+                }
+            });
+        });
+    });
+</script>

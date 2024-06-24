@@ -1,0 +1,116 @@
+@{
+    ViewData["Title"] = "Acceuil";
+}
+
+<div class="container">
+    <h1>Recherche sur vos heure supplémentaires</h1>
+    <div class="row">
+        <div class="col-6">
+            <form id="searchForm">
+                <div class="form-group">
+                    <label for="annee">Année</label>
+                    <input type="text" class="form-control" id="annee" name="annee">
+                </div>
+                <div class="form-group">
+                    <label for="mois">Mois</label>
+                    <select class="form-control" id="mois" name="mois">
+                        <!-- Les options seront ajoutées par AJAX -->
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+            </form>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-6">
+                    <p><span>HT : Heures Totales de travail</span></p>
+                    <p><span>HN : Heures Normales</span></p>
+                    <p><span>HT : Heures Totales de travail</span></p>
+                    <p><span>HS130 : Heures Supplémentaires 30%</span></p>
+                </div>
+                <div class="col-6">
+                    <p><span>HS150 : Heures Supplémentaires 50%</span></p>
+                    <p><span>HN30 : Heures de Nuit habituelles</span></p>
+                    <p><span>Hdim40 : Heures Dimanche</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th scope="col">Employee</th>
+                <th scope="col">Mois</th>
+                <th scope="col">Semaine</th>
+                <th scope="col">HT</th>
+                <th scope="col">HN</th>
+                <th scope="col">HS</th>
+                <th scope="col">HS130</th>
+                <th scope="col">HS150</th>
+                <th scope="col">HN30</th>
+                <th scope="col">Hdim40</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody id="resultsTableBody">
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $.ajax({
+            url: '/api/Employees/getMois',
+            type: 'GET',
+            success: function (data) {
+                var moisSelect = $('#mois');
+                moisSelect.empty();
+                data.forEach(function (mois) {
+                    moisSelect.append('<option value="' + mois.mois + '">' + mois.mois + '</option>');
+                });
+            },
+            error: function (error) {
+                console.error('Erreur:', error);
+            }
+        });
+
+        $('#searchForm').on('submit', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/api/Employees/search',
+                type: 'GET',
+                data: {
+                    annee: $('#annee').val(),
+                    mois: $('#mois').val()
+                },
+                success: function (data) {
+                    var resultsTableBody = $('#resultsTableBody');
+                    resultsTableBody.empty();
+
+                    data.forEach(function (item) {
+                        var row = '<tr>' +
+                            '<td>' + item.employee + '</td>' +
+                            '<td>' + item.mois + '</td>' +
+                            '<td>Semaine ' + item.semaine + '</td>' +
+                            '<td>' + item.ht + '</td>' +
+                            '<td>' + item.hn + '</td>' +
+                            '<td>' + item.hs + '</td>' +
+                            '<td>' + item.hS130 + '</td>' +
+                            '<td>' + item.hS150 + '</td>' +
+                            '<td>' + item.hN30 + '</td>' +
+                            '<td>' + item.hdim40 + '</td>' +
+                            '</tr>';
+                        resultsTableBody.append(row);
+                    });
+                },
+                error: function (error) {
+                    console.error('Erreur:', error);
+                }
+            });
+        });
+    });
+</script>

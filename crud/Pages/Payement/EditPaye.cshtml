@@ -1,0 +1,87 @@
+@page "{id:guid}"
+@model Crud.Pages.Payement.EditPayeModel
+
+@{
+    ViewData["Title"] = "Modifier les informations de paiement";
+}
+
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-8">
+        <h1 class="mb-3 text-center">Modifier les informations de paiement</h1>
+        <br />
+        @if (!string.IsNullOrEmpty(ViewData["Message"]?.ToString()))
+        {
+            <div class="alert alert-success" role="alert">
+                @ViewData["Message"]
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(ViewData["Error"]?.ToString()))
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewData["Error"]
+            </div>
+        }
+        <form method="post">
+            <input type="hidden" asp-for="EditPaye.Id" />
+            <div class="row">
+                <div class="col-6">
+                    <label for="inputYear" class="form-label">Année</label>
+                    <input type="text" class="form-control" id="inputYear" asp-for="EditPaye.annee" disabled>
+                </div>
+                <div class="col-6">
+                    <label for="inputEmployee" class="form-label">Employé</label>
+                    <select id="inputEmployee" class="form-select" asp-for="EditPaye.EmployeeId">
+                        <option value="">Choisir...</option>
+                        @foreach (var emp in Model.Employees)
+                        {
+                            <option value="@emp.Id">@emp.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="inputMonth" class="form-label">Mois</label>
+                    <select id="inputMonth" class="form-select" asp-for="EditPaye.nbMois">
+                        <option value="">Choisir...</option>
+                        @foreach (var mois in Model.Mois)
+                        {
+                            <option value="@mois.Id">@mois.mois</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-6">
+                    <label for="inputWeek" class="form-label">Semaine</label>
+                    <select id="inputWeek" class="form-select" asp-for="EditPaye.nbSemaine">
+                        <option value="">Choisir...</option>
+                        @foreach (var semaine in Model.Semaines)
+                        {
+                            <option value="@semaine.Id">@semaine.semaine</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <label for="inputTotalHours" class="form-label">Heures totales travaillées</label>
+                    <input type="number" min="0" max="80" class="form-control" id="inputTotalHours" asp-for="EditPaye.heureTotal">
+                </div>
+                <div class="col-4">
+                    <label for="inputNightHours" class="form-label">Heures travaillées la nuit</label>
+                    <input type="number" min="0" max="20" class="form-control" id="inputNightHours" asp-for="EditPaye.heureNuit">
+                </div>
+                <div class="col-4">
+                    <label for="inputSundayHours" class="form-label">Heures travaillées le dimanche</label>
+                    <input type="number" min="0" max="20" class="form-control" id="inputSundayHours" asp-for="EditPaye.heureDimanche">
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Valider</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-2"></div>
+</div>

@@ -1,0 +1,92 @@
+@page
+@model Crud.Pages.Payement.ListTimeWorkModel
+@{
+    ViewData["Title"] = "Liste heure de travail chaque semaine";
+}
+
+<h1>Liste heure de travail par semaine</h1>
+<br>
+<form method="get">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-8">
+                <input type="text" name="search" value="@Model.CurrentSearch" placeholder="Search by name"
+                    class="form-control" />
+            </div>
+            <div class="col-4">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </div>
+</form>
+<br>
+<form method="post" enctype="multipart/form-data" asp-page-handler="ImportCsv">
+    <input type="file" name="csvFile" />
+    <button type="submit" class="btn-dark">Import CSV</button>
+</form>
+<br>
+<div class="row">
+    <div class="col-2"><span>HT : Heures Totales de travail</span></div>
+    <div class="col-2"><span>HN : Heures Normales/Semaines</span></div>
+    <div class="col-2"><span>HS : Heures Supplémentaires</span></div>
+    <div class="col-2"><span>HN30 : Heures de Nuit habituelles</span></div>
+    <div class="col-2"><span>Hdim40 : Heures Dimanche</span></div>
+</div>
+<br>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Employee</th>
+            <th scope="col">Mois</th>
+            <th scope="col">Semaine</th>
+            <th scope="col">HT</th>
+            <th scope="col">HN</th>
+            <th scope="col">HS</th>
+            <th scope="col">HS130</th>
+            <th scope="col">HS150</th>
+            <th scope="col">HN30</th>
+            <th scope="col">Hdim40</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.PayeDetails != null && Model.PayeDetails.Any())
+        {
+            @foreach (var item in Model.PayeDetails)
+            {
+                <tr>
+                    <td>@item.Nom</td>
+                    <td>@item.nameMois</td>
+                    <td>Semaine @item.nbSemaine</td>
+                    <td>@item.HT</td>
+                    <td>@item.HN</td>
+                    <td>@item.HS</td>
+                    <td>@item.HS130</td>
+                    <td>@item.HS150</td>
+                    <td>@item.HN30</td>
+                    <td>@item.Hdim40</td>
+                    <td>
+                        <a href="/Payement/EditPaye/@item.Id" class="btn btn-secondary btn-sm">Edit</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="11" class="text-center">No records found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a class="page-link" asp-page="./ListeTimeWork" asp-route-search="@Model.CurrentSearch"
+                    asp-route-currentPage="@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>

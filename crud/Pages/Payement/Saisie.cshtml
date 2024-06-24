@@ -1,0 +1,97 @@
+@page
+@model Crud.Pages.Payement.SaisieModel
+@{
+    ViewData["Title"] = "Saisie heure de travail";
+    var message = ViewData["Message"]?.ToString();
+    var error_message = ViewData["Error"]?.ToString();
+}
+
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-8">
+        <h1 class="mb-3 text-center">Saisie heure de travail par semaine</h1>
+        <br>
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="alert alert-success" role="alert">
+                @message
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(error_message))
+        {
+            <div class="alert alert-danger" role="alert">
+                @error_message
+            </div>
+        }
+        <form method="post">
+            <div class="row">
+                <div class="col-6">
+                    <label for="inputEmail4" class="form-label">Année</label>
+                    <input type="text" class="form-control" id="inputEmail4" value="2024" asp-for="AddPayeRequest.annee"
+                        disabled>
+                </div>
+                <div class="col-6">
+                    <label for="inputState" class="form-label">Employés</label>
+                    <select id="inputState" class="form-select" asp-for="AddPayeRequest.EmployeeId">
+                        <option selected>Choose...</option>
+                        @if (Model.Employees != null)
+                        {
+                            @foreach (var emp in Model.Employees)
+                            {
+                                <option value="@emp.Id">@emp.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="inputState" class="form-label">Mois</label>
+                    <select id="inputState" class="form-select" asp-for="AddPayeRequest.nbMois">
+                        <option selected>Choose...</option>
+                        @if (Model.Mois != null)
+                        {
+                            @foreach (var mois in Model.Mois)
+                            {
+                                <option value="@mois.Id">@mois.mois</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-6">
+                    <label for="inputState" class="form-label">Semaine</label>
+                    <select id="inputState" class="form-select" asp-for="AddPayeRequest.nbSemaine">
+                        <option selected>Choose...</option>
+                        @if (Model.Semaines != null)
+                        {
+                            @foreach (var semaine in Model.Semaines)
+                            {
+                                <option value="@semaine.Id">@semaine.semaine</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <label for="inputZip" class="form-label">Heure Total travail</label>
+                    <input type="number" min="0" max="80" class="form-control" id="inputZip" asp-for="AddPayeRequest.heureTotal">
+                </div>
+                <div class="col-4">
+                    <label for="inputZip" class="form-label">Heure Total nuit</label>
+                    <input type="number" min="0" max="20" class="form-control" id="inputZip" asp-for="AddPayeRequest.HeureNuit">
+                </div>
+                <div class="col-4">
+                    <label for="inputZip" class="form-label">Heure Total dimanche</label>
+                    <input type="number" min="0" max="20" class="form-control" id="inputZip" asp-for="AddPayeRequest.heureDimanche">
+                </div>
+            </div>
+            <div class="row" style="margin-top: 2%;">
+                <div class="col-4"><button type="submit" class="btn btn-primary">Valider</button></div>
+                <div class="col-4"></div>
+                <div class="col-4"></div>
+            </div>
+        </form>
+    </div>
+    <div class="col-2"></div>
+</div>
